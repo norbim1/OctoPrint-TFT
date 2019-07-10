@@ -59,13 +59,15 @@ func (m *statusPanel) createMainBox() *gtk.Box {
 
 	box := MustBox(gtk.ORIENTATION_VERTICAL, 5)
 	box.SetVAlign(gtk.ALIGN_START)
-	box.SetVExpand(true)
+//	box.SetVExpand(false)
+	box.SetHExpand(true)
 
 	grid := MustGrid()
 	grid.SetHExpand(true)
 	grid.Add(m.createInfoBox())
+//	grid.Add(m.createTemperatureBox())
 	grid.SetVAlign(gtk.ALIGN_START)
-	grid.SetMarginTop(20)
+	grid.SetMarginTop(10)
 	
 	box.Add(grid)
 
@@ -75,6 +77,16 @@ func (m *statusPanel) createMainBox() *gtk.Box {
 	//pb_box.Add(MustButton(MustImageFromFileWithSize("back.svg", 60, 60), m.UI.GoHistory))
 	pb_box.Add(m.createProgressBar())	
 	box.Add(pb_box)
+
+	grid1 := MustGrid()
+	grid1.SetHExpand(true)
+//	grid1.Add(m.createInfoBox())
+	grid1.Add(m.createTemperatureBox())
+	grid1.Add(m.createTemperatureBox1())
+	grid1.SetVAlign(gtk.ALIGN_START)
+	grid1.SetMarginTop(10)
+	
+	box.Add(grid1)
 
 	butt := MustBox(gtk.ORIENTATION_HORIZONTAL, 0)
 	butt.SetHAlign(gtk.ALIGN_END)
@@ -97,10 +109,10 @@ func (m *statusPanel) createInfoBox() *gtk.Box {
 	m.left.SetName("TimeLabel")
 	m.finish = MustLabelWithImage("finish.svg", "")
 	m.finish.SetName("TimeLabel")
-	m.bed = MustLabelWithImage("bed.svg", "")
-	m.bed.SetName("TempLabel")
-	m.tool0 = MustLabelWithImage("extruder.svg", "")
-	m.tool0.SetName("TempLabel")
+//	m.bed = MustLabelWithImage("bed.svg", "")
+//	m.bed.SetName("TempLabel")
+//	m.tool0 = MustLabelWithImage("extruder.svg", "")
+//	m.tool0.SetName("TempLabel")
 //	m.status = MustLabelWithImage("file.svg", "")
 
 	info := MustBox(gtk.ORIENTATION_VERTICAL, 5)
@@ -109,12 +121,48 @@ func (m *statusPanel) createInfoBox() *gtk.Box {
 	info.Add(m.file)
 	info.Add(m.left)
 	info.Add(m.finish)
-	info.Add(m.tool0)
-	info.Add(m.bed)
+//	info.Add(m.tool0)
+//	info.Add(m.bed)
 //	info.Add(m.status)
-	info.SetMarginStart(20)
+	info.SetMarginStart(10)
 
 	return info
+}
+
+func (m *statusPanel) createTemperatureBox() *gtk.Box {
+	m.bed = MustLabelWithImage("bed.svg", "")
+	m.bed.SetName("TempLabel")
+//	m.tool0 = MustLabelWithImage("extruder.svg", "")
+//	m.tool0.SetName("TempLabel")
+//	m.tool1 = MustLabelWithImage("extruder.svg", "")
+
+	temp := MustBox(gtk.ORIENTATION_VERTICAL, 5)
+	temp.SetHAlign(gtk.ALIGN_START)
+	temp.SetHExpand(true)
+	temp.SetVExpand(true)
+	temp.Add(m.bed)
+//	temp.Add(m.tool0)
+//	temp.Add(m.tool1)
+
+	return temp
+}
+
+func (m *statusPanel) createTemperatureBox1() *gtk.Box {
+//	m.bed = MustLabelWithImage("bed.svg", "")
+//	m.bed.SetName("TempLabel")
+	m.tool0 = MustLabelWithImage("extruder.svg", "")
+	m.tool0.SetName("TempLabel")
+//	m.tool1 = MustLabelWithImage("extruder.svg", "")
+
+	temp := MustBox(gtk.ORIENTATION_VERTICAL, 5)
+	temp.SetHAlign(gtk.ALIGN_START)
+	temp.SetHExpand(true)
+	temp.SetVExpand(true)
+//	temp.Add(m.bed)
+	temp.Add(m.tool0)
+//	temp.Add(m.tool1)
+
+	return temp
 }
 
 func (m *statusPanel) createPrintButton() gtk.IWidget {
@@ -248,7 +296,7 @@ func (m *statusPanel) updateJob() {
 		e := time.Duration(int64(s.Progress.PrintTime) * 1e9)
 		l := time.Duration(int64(s.Progress.PrintTimeLeft) * 1e9)
 		f := time.Now().Local().Add(time.Duration(int64(s.Progress.PrintTimeLeft)) * time.Second)
-		text = fmt.Sprintf("Elapsed: %s / Left: %s", e, l)
+		text = fmt.Sprintf("Time: %s / Left: %s", e, l)
 		finishText = fmt.Sprintf("Finish time: %s", f.Format("15:04 02-Jan-06"))
 		if l == 0 {
 			text = fmt.Sprintf("Elapsed: %s", e)
